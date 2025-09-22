@@ -39,33 +39,30 @@ uint8_t PM5000SSensor::calculate_checksum_(const std::vector<uint8_t> &data) {
 }
 
 void PM5000SSensor::start_measurement() {
-  // Open particle measurement: 16 07 02 00 00 00 13
   std::vector<uint8_t> cmd = {0x16, 0x07, 0x02, 0x00, 0x00, 0x00};
   uint8_t cs = calculate_checksum_(cmd);
   cmd.push_back(cs);
 
   std::vector<uint8_t> frame;
-  frame.push_back(0x50);  // Device address with write bit
+  frame.push_back(0x50);  
   frame.insert(frame.end(), cmd.begin(), cmd.end());
 
   send_command_(frame);
 }
 
 void PM5000SSensor::stop_measurement() {
-  // Close particle measurement: 16 07 01 00 00 00 10
   std::vector<uint8_t> cmd = {0x16, 0x07, 0x01, 0x00, 0x00, 0x00};
   uint8_t cs = calculate_checksum_(cmd);
   cmd.push_back(cs);
 
   std::vector<uint8_t> frame;
-  frame.push_back(0x50);  // Device address with write bit
+  frame.push_back(0x50);  
   frame.insert(frame.end(), cmd.begin(), cmd.end());
 
   send_command_(frame);
 }
 
 void PM5000SSensor::set_output_unit(uint8_t unit) {
-  // unit: 0 pcs/L, 1 pcs/m3, 2 pcs/28.3L
   std::vector<uint8_t> cmd = {0x16, 0x07, 0x08, 0x00, 0x00, unit};
   uint8_t cs = calculate_checksum_(cmd);
   cmd.push_back(cs);
@@ -87,7 +84,6 @@ void PM5000SSensor::read_data_() {
     return;
   }
 
-  // Validate frame header and length
   if (buffer[0] != 0x16) {
     ESP_LOGW("pm5000s_sensor", "Invalid frame header: 0x%02X", buffer[0]);
     return;
@@ -98,7 +94,6 @@ void PM5000SSensor::read_data_() {
     return;
   }
 
-  // Validate checksum (XOR from P1 to P31)
   uint8_t checksum = 0;
   for (int i = 0; i < 31; i++) {
     checksum ^= buffer[i];
@@ -108,7 +103,6 @@ void PM5000SSensor::read_data_() {
     return;
   }
 
-  // Extract 4-byte particle counts (big-endian)
   auto parse_uint32 = [&](int start_index) -> uint32_t {
     return ((uint32_t)buffer[start_index] << 24) |
            ((uint32_t)buffer[start_index + 1] << 16) |
@@ -124,5 +118,5 @@ void PM5000SSensor::read_data_() {
   pm_10->publish_state(parse_uint32(27));   // P28-P31 >10μm
 }
 
-}  // namespace pm5000s_sensor
-}  // namespace esphome
+}  
+}  
