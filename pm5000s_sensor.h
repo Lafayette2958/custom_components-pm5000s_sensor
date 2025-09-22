@@ -15,7 +15,6 @@ class PM5000SSensor : public PollingComponent, public i2c::I2CDevice {
 
   void update() override;
 
-  // Particle sensors exposed to ESPHome
   Sensor *pm_0_3 = new Sensor();
   Sensor *pm_0_5 = new Sensor();
   Sensor *pm_1_0 = new Sensor();
@@ -23,10 +22,9 @@ class PM5000SSensor : public PollingComponent, public i2c::I2CDevice {
   Sensor *pm_5_0 = new Sensor();
   Sensor *pm_10 = new Sensor();
 
-  // Control commands
   void start_measurement();
   void stop_measurement();
-  void set_output_unit(uint8_t unit);  // 0: pcs/L, 1: pcs/m³, 2: pcs/28.3L
+  void set_output_unit(uint8_t unit);  
 
  protected:
   void read_data_();
@@ -35,5 +33,5 @@ class PM5000SSensor : public PollingComponent, public i2c::I2CDevice {
 
 };
 
-}  // namespace pm5000s_sensor
-}  // namespace esphome
+}  
+}  
